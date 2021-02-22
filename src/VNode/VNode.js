@@ -5,6 +5,7 @@ class VNode{
     children;
     count = 0;//子节点数量
     key;
+    text;
     vm;
     el;
     constructor(tag,props={},children=[],vm=null){
@@ -41,29 +42,12 @@ class VNode{
             })
         }
     }
-
-    render(){
-        const el=document.createElement(this.tag);
-        const props=this.props;
-        for(let prop in props){
-            if (prop === "v-model") {
-                const name=props[prop];
-                el.addEventListener("input", (e) => {
-                    this.vm[name] = e.target.value;
-                });
-                el.value = this.vm[name];
-                el.removeAttribute("v-model");
-            }else{
-                el.setAttribute(prop,props[prop]);
-            }
-        }
-        const children=this.children;
-        children.forEach(child=>{
-            const childEl=(child instanceof VNode)?child.render():document.createTextNode(child);
-            el.appendChild(childEl);
-        })
-        return el;
-    }
 }
 
+
+export const createTextVNode=(str)=>{
+    const node=new VNode();
+    node.text=str;
+    return node;
+}
 export default VNode;

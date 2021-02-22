@@ -1,41 +1,23 @@
-import VNode from "@/VNode/VNode";
-import Watcher from "../observer/Watcher";
-import { getObjValueByString } from "@/utils";
-const reg = /[^{}]+(?=})/g;
+import { compile } from "@/compile";
+import VNode from "@/VNode/VNode.js";
 
-function render(vnode){
-    const {tag,props,vm,children}=vnode;
-    const el=document.createElement(tag);
-    for(let prop in props){
-        if (prop === "v-model") {
-            const name=props[prop];
-            el.addEventListener("input", (e) => {
-                vm[name] = e.target.value;
-            });
-            el.value = vm[name];
-            el.removeAttribute("v-model");
-        }else{
-            el.setAttribute(prop,props[prop]);
-        }
-    }
-    children.forEach(child=>{
-        const childEl=(child instanceof VNode)?render(child):createTextNode(child,vm);
-        el.appendChild(childEl);
-    })
-    vnode.el=el;
-    return el;
+/**
+ * 通过递归将DOM转换为virtual-dom
+ * @param {} node
+ * @param {*} vm
+ */
+function render(node, vm) {
+  const { childNodes } = node;
+  const childVNodeList = [];
+  for (let child of childNodes) {
+    const childVNode = render(child, vm);
+    childVNode && childVNodeList.push(childVNode);
+  }
+  const vnode = compile(node, vm);
+  if (vnode instanceof VNode) {
+    vnode.addChildren(childVNodeList);
+  }
+  return vnode;
 }
-
-
-function createTextNode(text,vm){
-    const node=document.createTextNode(text);
-    const arr = node.nodeValue.match(reg);
-    node.nodeValue =
-      arr &&
-      new Watcher(vm, node, arr) &&
-      arr.map((e) => getObjValueByString(vm, e)).join(" ");
-    return node;
-}
-
 
 export default render;

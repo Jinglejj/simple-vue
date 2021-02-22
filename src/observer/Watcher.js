@@ -1,25 +1,30 @@
 import Dep from "./Dep";
-import {getObjValueByString} from '@/utils'
+import {getObjValueByString} from '@/utils';
+import diff from '@/VNode/diff.js';
+import patch from '@/VNode/patch.js';
+import render from '@/render';
 export default class Watcher {
-  constructor(vm, node, name) {
+  constructor(vm, vnode, name) {
     Dep.target = this;
     this.name = name;
-    this.node = node;
+    this.vnode = vnode;
     this.vm = vm;
-    this.update();
+    this.get();
     Dep.target = null;
   }
 
   get() {
-    if(this.node.nodeType===3) {
-      this.value = this.name.map(e => getObjValueByString(this.vm, e)).join(' ');
-    }else{
       this.value = getObjValueByString(this.vm,this.name);
-    }
   }
 
   update() {
     this.get();
-    this.node.nodeValue = this.value;
+    const oldVNode=this.vm.vnode;
+    const newVNode=render(this.vm._template,this.vm);
+    const patches=diff(oldVNode,newVNode);
+    console.log(newVNode);
+    console.log(oldVNode);
+    console.log(patches);
+    patch(this.vm.el,patches);
   }
 }

@@ -1,8 +1,10 @@
 import observer from "@/observer";
 import { proxy } from "@/proxy";
-import {nodeToFragment,nodeToVNode} from "@/VNode";
-import render from '@/render'
+import {nodeToFragment} from "@/compile";
+import updateComponent from '@/update';
+import render from '@/render';
 class Vue {
+  vnode;
   constructor(options) {
     this.$options = options;
     this._data = options.data;
@@ -17,9 +19,13 @@ class Vue {
   $mount(el) {
     el = el || this.el;
     const container = document.querySelector(el); //获取挂载节点
-    const dom=nodeToFragment(container); //截持dom
-    const vnode = nodeToVNode(dom.firstElementChild, this);// 将dom转换为Virtual
-    const app=render(vnode);  // 渲染virtual-dom
+    const template=nodeToFragment(container).firstElementChild; //截持dom,并提取模板
+    this._template=template;
+    const vnode = render(template, this); // 将dom转换为virtual-dom
+    const app=updateComponent(vnode);  // 渲染virtual-dom
+    console.log(vnode);
+    this.vnode=vnode;
+    this.el=app;
     document.body.appendChild(app);
   }
 }
