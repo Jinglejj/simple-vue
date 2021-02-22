@@ -6,6 +6,7 @@ class VNode{
     count = 0;//子节点数量
     key;
     vm;
+    el;
     constructor(tag,props={},children=[],vm=null){
         if(isArray(props)){
             children=props;

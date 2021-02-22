@@ -22,6 +22,7 @@ function render(vnode){
         const childEl=(child instanceof VNode)?render(child):createTextNode(child,vm);
         el.appendChild(childEl);
     })
+    vnode.el=el;
     return el;
 }
 
