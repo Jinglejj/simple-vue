@@ -10,17 +10,10 @@
     <div id="app" class="container">
         <input type="text" v-model="text">
         <span>输入的值：</span> {{text}}
-        <div></div>
-        {{obj.name}}
+        <div>
+            {{obj.name}}
+        </div>
     </div>
 </body>
 
-<script defer>
-    const vm=new Vue({
-        data:{
-            text:'Hello World',
-            obj:{name:'yujinjiang'}
-        }
-    }).$mount("#app")
-</script>
 </html>

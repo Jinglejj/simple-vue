@@ -12,7 +12,7 @@ let entries = fs.readdirSync(pagesRoot).reduce((entries, page) => {
 const htmlPlugins = Object.keys(entries).map(page => new HtmlWebpackPlugin({
     template: `${entries[page]}/index.html`,
     filename: `${page}.html`,
-    chunks: [page,'main']
+    chunks: ['main',page]
 }))
 
 const config = {

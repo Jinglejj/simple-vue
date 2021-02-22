@@ -19,7 +19,7 @@ function render(vnode){
         }
     }
     children.forEach(child=>{
-        const childEl=(child instanceof VNode)?child.render():createTextNode(child,vm);
+        const childEl=(child instanceof VNode)?render(child):createTextNode(child,vm);
         el.appendChild(childEl);
     })
     return el;
