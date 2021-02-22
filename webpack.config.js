@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-
+const webpack =require('webpack');
 const pagesRoot = path.resolve(__dirname, './src/pages');
 let entries = fs.readdirSync(pagesRoot).reduce((entries, page) => {
     // 文件夹名称作为入口名称，值为对应的路径，可以省略 `index.js`，webpack 默认会寻找目录下的 index.js 文件
@@ -45,7 +45,8 @@ const config = {
         }]
     },
     plugins: [
-       ...htmlPlugins
+       ...htmlPlugins,
+       new webpack.HotModuleReplacementPlugin()
     ]
 }
 

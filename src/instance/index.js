@@ -1,36 +1,51 @@
 import observer from "@/observer";
-import {compile} from '@/compile'
-import {proxy} from "@/proxy";
+import { compile } from "@/compile";
+import { proxy } from "@/proxy";
+import VNode from "@/VNode/VNode";
+import render from '@/render'
 class Vue {
   constructor(options) {
-    this.$options=options;
+    this.$options = options;
     this._data = options.data;
-    this.el=options.el;
+    this.el = options.el;
     observer(this._data);
     proxy(this, "_data");
-    if(options.el){
+    if (options.el) {
       this.$mount(options.el);
     }
   }
 
-  $mount(el){
+  $mount(el) {
     el = el || this.el;
-    const container=document.querySelector(el)
-    const dom = nodeToFragment(container, this);
-    container.appendChild(dom);
+    const container = document.querySelector(el);
+    const dom=nodeToFragment(container);
+    const vnode = nodeToVNode(dom.firstElementChild, this);
+    console.log(vnode);
+    const app=render(vnode);
+    console.log(app);
+    document.body.appendChild(app);
   }
 }
 
-
-function nodeToFragment(node, vm) {
+function nodeToFragment(node){
   const flag = document.createDocumentFragment();
-  let child;
-  while (child = node.firstChild) {
-      compile(child, vm);
-      flag.appendChild(child);
-  }
+  flag.appendChild(node);
   return flag;
 }
 
+
+function nodeToVNode(node, vm) {
+  const { childNodes } = node;
+  const childVNodeList = [];
+  for (let child of childNodes) {
+    const childVNode = nodeToVNode(child, vm);
+    childVNode&&childVNodeList.push(childVNode);
+  }
+  const vnode = compile(node, vm);
+  if(vnode instanceof VNode){
+    vnode.addChildren(childVNodeList);
+  }
+  return vnode;
+}
 
 export default Vue;
