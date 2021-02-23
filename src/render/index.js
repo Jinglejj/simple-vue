@@ -1,6 +1,5 @@
 import { compile } from "@/compile";
 import VNode from "@/VNode/VNode.js";
-import updateComponent from "../update";
 
 function render() {
   const vm=this;

@@ -1,6 +1,7 @@
-import observer from "@/observer";
+import {observer} from "@/observer";
 import { proxy } from "@/proxy";
 import { nodeToFragment } from "@/compile";
+import {initState} from './state'
 import _update from "@/update";
 import _render from "@/render";
 import Watcher from "../observer/Watcher";
@@ -11,10 +12,7 @@ class Vue {
   _update = _update;
   constructor(options) {
     this.$options = options;
-    this._data = options.data;
-    this.el = options.el;
-    observer(this._data);
-    proxy(this, "_data");
+    initState(this);
     if (options.el) {
       this.$mount(options.el);
     }

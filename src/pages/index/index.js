@@ -1,8 +1,14 @@
 import Vue from '@/instance';
 
-const vm=new Vue({
+let vm=new Vue({
     data:{
         text:'Hello World',
         obj:{name:'于锦江'}
     }
-}).$mount("#app")
+})
+vm.$mount("#app"); 
+
+
+setTimeout(()=>{
+    vm.obj.name="12132131"
+},2000)

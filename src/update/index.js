@@ -1,6 +1,7 @@
 import VNode from '@/VNode/VNode'
 import diff from "@/VNode/diff.js";
 import patch from "@/VNode/patch.js";
+
 function update(vnode){
     const vm=this;
     const {_vnode:oldVNode}=vm;

@@ -1,5 +1,5 @@
 import Dep from './Dep'
-function observer (obj) {
+export function observer (obj) {
   if (!obj || typeof obj !== "object") {
     return;
   }
@@ -7,7 +7,7 @@ function observer (obj) {
 }
 
 
-function defineReactive(obj,key,val){
+export function defineReactive(obj,key,val){
     observer(val);
     var dep=new Dep();
     Object.defineProperty(obj,key,{
