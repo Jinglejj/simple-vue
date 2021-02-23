@@ -4,11 +4,15 @@ let vm=new Vue({
     data:{
         text:'Hello World',
         obj:{name:'于锦江'}
+    },
+    methods:{
+        reverseText(){
+            console.log(this);
+            this.text=this.text.split('').reverse().join('');
+        }
     }
 })
+
 vm.$mount("#app"); 
 
-
-setTimeout(()=>{
-    vm.obj.name="12132131"
-},2000)
+document.getElementById('button').addEventListener('click',()=>{vm.reverseText()})

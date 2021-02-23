@@ -1,5 +1,6 @@
 import {observer} from '@/observer'
 import {hasOwn} from '@/utils'
+import { keys } from '@material-ui/core/styles/createBreakpoints';
 export function initState(vm) {
   const options = vm.$options;
   if (options.methods) initMethods(vm, options.methods);
@@ -40,4 +41,12 @@ export function proxy (target, sourceKey, key) {
     })
   }
 
-function initMethods(vm, methods) {}
+function initMethods(vm, methods) {
+    for(const key in methods){
+        if(typeof methods[keys]!=='function'){
+            console.warn( `Method "${key}" has type "${typeof methods[key]}" in the component definition. ` +
+            `Did you reference the function correctly?`,)
+        }
+        vm[key]=typeof methods[key]!=='function'?()=>{}:methods[key].bind(vm);
+    }
+}
