@@ -1,10 +1,14 @@
 import observer from "@/observer";
 import { proxy } from "@/proxy";
-import {nodeToFragment} from "@/compile";
-import updateComponent from '@/update';
-import render from '@/render';
+import { nodeToFragment } from "@/compile";
+import _update from "@/update";
+import _render from "@/render";
+import Watcher from "../observer/Watcher";
 class Vue {
-  vnode;
+  _vnode = null;
+  _watchers = [];
+  _render = _render;
+  _update = _update;
   constructor(options) {
     this.$options = options;
     this._data = options.data;
@@ -17,16 +21,14 @@ class Vue {
   }
 
   $mount(el) {
-    el = el || this.el;
     const container = document.querySelector(el); //获取挂载节点
-    const template=nodeToFragment(container).firstElementChild; //截持dom,并提取模板
-    this._template=template;
-    const vnode = render(template, this); // 将dom转换为virtual-dom
-    const app=updateComponent(vnode);  // 渲染virtual-dom
-    console.log(vnode);
-    this.vnode=vnode;
-    this.el=app;
-    document.body.appendChild(app);
+    const template = nodeToFragment(container).firstElementChild; //截持dom,并提取模板
+    this._template = template;
+    const vm = this;
+    let updateComponent = (vm) => {
+      vm._update(vm._render());
+    };
+    new Watcher(vm, updateComponent, () => {}, true);
   }
 }
 

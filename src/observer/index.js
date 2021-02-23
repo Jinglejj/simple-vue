@@ -14,7 +14,7 @@ function defineReactive(obj,key,val){
         enumerable:true,
         configurable:true,
         get(){
-            if(Dep.target){dep.addSub(Dep.target);}
+            if(Dep.target){Dep.target.addDep(dep)}
             return val;
         },
         set(newVal){

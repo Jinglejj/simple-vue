@@ -1,16 +1,24 @@
 import { compile } from "@/compile";
 import VNode from "@/VNode/VNode.js";
+import updateComponent from "../update";
+
+function render() {
+  const vm=this;
+  const { _template } = vm;
+  const vnode = generateVNode(_template, vm);
+  return vnode;
+}
 
 /**
  * 通过递归将DOM转换为virtual-dom
  * @param {} node
  * @param {*} vm
  */
-function render(node, vm) {
+function generateVNode(node, vm) {
   const { childNodes } = node;
   const childVNodeList = [];
   for (let child of childNodes) {
-    const childVNode = render(child, vm);
+    const childVNode = generateVNode(child, vm);
     childVNode && childVNodeList.push(childVNode);
   }
   const vnode = compile(node, vm);

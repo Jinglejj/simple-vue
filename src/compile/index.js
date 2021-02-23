@@ -1,6 +1,5 @@
 import VNode,{createTextVNode} from "@/VNode/VNode.js";
 import { getObjValueByString } from "@/utils";
-import Watcher from "../observer/Watcher";
 const reg = /[^{}]+(?=})/g;
 const replace = /{{(.+?)}}/g;
 
@@ -24,8 +23,7 @@ export const compile = (node, vm) => {
       arr.forEach(name => {
         values[name]=getObjValueByString(vm,name);
       });
-      vnode=vnode.replace(replace, (_,g1) => values[g1] || g1);
-      arr.forEach(name=>new Watcher(vm,vnode,name));
+      vnode=vnode.replace(replace, (_,g1) => values[g1]);
     }
   }
 
