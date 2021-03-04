@@ -13,7 +13,7 @@ function render() {
  * @param {} node
  * @param {*} vm
  */
-function generateVNode(node, vm) {
+export function generateVNode(node, vm) {
   const { childNodes } = node;
   const childVNodeList = [];
   for (let child of childNodes) {

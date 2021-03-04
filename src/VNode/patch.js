@@ -1,4 +1,5 @@
 import { isString } from "@/utils";
+import {generateElment} from '@/update'
 const REPLACE = 0;
 const REORDER = 1;
 const PROPS = 2;
@@ -30,7 +31,7 @@ function applyPatches(node, currentPatches) {
       case REPLACE:
         const newNode = isString(currentPatch.node)
           ? document.createTextNode(currentPatch.node)
-          : currentPatch.node.render();
+          : generateElment(currentPatch.node);
         node.parentNode.replaceChild(newNode, node);
         break;
       case REORDER:

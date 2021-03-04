@@ -16,7 +16,7 @@ function update(vnode){
     }
 }
 
-function generateElment(vnode){
+export  function generateElment(vnode){
     const {tag,props,vm,children}=vnode;
     const el=document.createElement(tag);
     for(let prop in props){
