@@ -1,4 +1,4 @@
-import {isString} from '@/utils'
+import { isString } from "@/utils";
 const REPLACE = 0;
 const REORDER = 1;
 const PROPS = 2;
@@ -12,96 +12,95 @@ function patch(node, patches) {
 function dfsWalk(node, walker, patches) {
   const currentPatches = patches[walker.index];
   const len = (node.childNodes && node.childNodes.length) || 0;
-  for(let i=0;i<len;i++){
-      const child=node.childNodes[i];
-      walker.index++;
-      dfsWalk(child,walker,patches);
+  for (let i = 0; i < len; i++) {
+    const child = node.childNodes[i];
+    walker.index++;
+    dfsWalk(child, walker, patches);
   }
 
   // 如果当前节点存在差异
-  if(currentPatches){
-      applyPatches(node,currentPatches);
+  if (currentPatches) {
+    applyPatches(node, currentPatches);
   }
 }
 
-
-function applyPatches(node,currentPatches){
-  currentPatches.forEach(currentPatch=>{
-    switch(currentPatch.type){
+function applyPatches(node, currentPatches) {
+  currentPatches.forEach((currentPatch) => {
+    switch (currentPatch.type) {
       case REPLACE:
         const newNode = isString(currentPatch.node)
           ? document.createTextNode(currentPatch.node)
           : currentPatch.node.render();
-        node.parentNode.replaceChild(newNode, node)
+        node.parentNode.replaceChild(newNode, node);
         break;
-        case REORDER:
-          reorderChildren(node, currentPatch.moves)
-          break;
+      case REORDER:
+        reorderChildren(node, currentPatch.moves);
+        break;
       case PROPS:
-        setProps(node,currentPatch.props);
+        setProps(node, currentPatch.props);
         break;
-        case TEXT:
-          if (node.textContent) {
-            node.textContent = currentPatch.content
-          } else {
-            node.nodeValue = currentPatch.content
-          }
-          break;
+      case TEXT:
+        if (node.textContent) {
+          node.textContent = currentPatch.content;
+        } else {
+          node.nodeValue = currentPatch.content;
+        }
+        break;
       default:
-        throw new Error(`Unknown patch type ${currentPatch.type}`)
+        throw new Error(`Unknown patch type ${currentPatch.type}`);
     }
-  })
+  });
 }
 
-
-function setProps(node,props){
-  for(let key in props){
-    const value=props[key];
-    if(value===void 0){
+function setProps(node, props) {
+  for (let key in props) {
+    const value = props[key];
+    if (value === void 0) {
       node.removeAttribute(key);
-    }else{
-      node.setAttribute(key,value);
+    } else {
+      node.setAttribute(key, value);
     }
   }
 }
 
-function reorderChildren (node, moves) {
+function reorderChildren(node, moves) {
   const staticNodeList = Array.from(node.childNodes);
-  let maps = {}
+  let maps = {};
 
-  staticNodeList.forEach( node=> {
+  staticNodeList.forEach((node) => {
     if (node.nodeType === 1) {
-      var key = node.getAttribute('key')
+      var key = node.getAttribute("key");
       if (key) {
-        maps[key] = node
+        maps[key] = node;
       }
     }
-  })
+  });
 
-  moves.forEach( move=> {
-    let index = move.index
-    if (move.type === 0) { // remove item
-      if (staticNodeList[index] === node.childNodes[index]) { // maybe have been removed for inserting
-        node.removeChild(node.childNodes[index])
+  moves.forEach((move) => {
+    let index = move.index;
+    if (move.type === 0) {
+      // remove item
+      if (staticNodeList[index] === node.childNodes[index]) {
+        // maybe have been removed for inserting
+        node.removeChild(node.childNodes[index]);
       }
-      staticNodeList.splice(index, 1)
-    } else if (move.type === 1) { // insert item
+      staticNodeList.splice(index, 1);
+    } else if (move.type === 1) {
+      // insert item
       const insertNode = maps[move.item.key]
         ? maps[move.item.key].cloneNode(true) // reuse old item
-        : (typeof move.item === 'object')
-            ? move.item.render()
-            : document.createTextNode(move.item)
-      staticNodeList.splice(index, 0, insertNode)
-      node.insertBefore(insertNode, node.childNodes[index] || null)
+        : typeof move.item === "object"
+        ? move.item.render()
+        : document.createTextNode(move.item);
+      staticNodeList.splice(index, 0, insertNode);
+      node.insertBefore(insertNode, node.childNodes[index] || null);
     }
-  })
+  });
 }
 
-
-
-patch.REPLACE = REPLACE
-patch.REORDER = REORDER
-patch.PROPS = PROPS
-patch.TEXT = TEXT
+patch.REPLACE = REPLACE;
+patch.REORDER = REORDER;
+patch.PROPS = PROPS;
+patch.TEXT = TEXT;
 
 export default patch;

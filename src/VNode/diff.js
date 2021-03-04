@@ -94,7 +94,6 @@ function diffProps(oldNode, newNode) {
     return propsPatches;
 }
 
-
 function isIgnoreChildren(node) {
     return node.props && node.props.hasOwnProperty('ignore')
 }

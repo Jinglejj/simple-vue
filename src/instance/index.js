@@ -1,10 +1,8 @@
-import {observer} from "@/observer";
-import { proxy } from "@/proxy";
 import { nodeToFragment } from "@/compile";
 import {initState} from './state'
 import _update from "@/update";
 import _render from "@/render";
-import Watcher from "../observer/Watcher";
+import Watcher from "@/observer/Watcher";
 class Vue {
   _vnode = null;
   _watchers = [];

@@ -14,5 +14,4 @@ let vm=new Vue({
 })
 
 vm.$mount("#app"); 
-
 document.getElementById('button').addEventListener('click',()=>{vm.reverseText()})
