@@ -5,7 +5,7 @@ const replace = /{{(.+?)}}/g;
 
 export const compile = (node, vm) => {
   let vnode = null;
-  if (node.nodeType === 1) {
+  if (node.nodeType === Node.ELEMENT_NODE) {
     const attr = node.attributes;
     const name = node.localName;
     let props = {};
@@ -15,7 +15,7 @@ export const compile = (node, vm) => {
     vnode = new VNode(name, props, [], vm);
   }
 
-  if (node.nodeType === 3) {
+  if (node.nodeType === Node.TEXT_NODE) {
     vnode=node.nodeValue;
     const arr=vnode.match(reg);
     if(arr){
